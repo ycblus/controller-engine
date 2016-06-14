@@ -16,8 +16,9 @@ public class TemplateEngine {
      */
     public void Generate(List<String> tableNames,String basePath,String targetPath) throws Exception{
         AutoGenerateFile autoGenerateFile = new AutoGenerateFile();
-        //生成tableModel文件
+        //生成tableModel文件以后需先刷新工程
         autoGenerateFile.generateXml(tableNames, basePath, targetPath);
+        
         //根据tableModel文件生成Controller类
         autoGenerateFile.generateController(tableNames);
     }
