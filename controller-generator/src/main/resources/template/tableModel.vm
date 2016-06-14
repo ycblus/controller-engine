@@ -1,0 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <${entity}.xml>
+	   <Module entity="${entity}" table_name="${tableName}" cn_name="${cn_name}" pk_name="${pkName}" pk_column="${pk_column}" basePath="${basePath}" targetPath="${targetPath}">
+	   	   ${field}
+	   </Module>
+ </${entity}.xml>

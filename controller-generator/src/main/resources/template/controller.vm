@@ -1,0 +1,157 @@
+ package ${basePath}.controller;
+ 
+ import java.math.BigDecimal;
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+ import javax.servlet.http.HttpServletRequest;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.stereotype.Controller;
+ import org.springframework.ui.Model;
+ import org.springframework.util.StringUtils;
+ import org.springframework.web.bind.annotation.RequestMapping;
+ import org.springframework.web.bind.annotation.ResponseBody;
+ import org.springframework.web.servlet.ModelAndView;
+ import com.github.pagehelper.PageHelper;
+ import com.github.pagehelper.PageInfo;
+ import org.apache.log4j.Logger;
+ import ${basePath}.dao.${Entity}Mapper;
+ import ${basePath}.po.${Entity};
+ 
+ @Controller
+ @RequestMapping("${entity}")
+ public class ${Entity}Controller {
+     Logger logger = Logger.getLogger(${Entity}Controller.class.getName());
+     
+     @Autowired
+     ${Entity}Mapper ${entity}Mapper;
+ 
+     @RequestMapping("list")
+     public ModelAndView query${Entity}List(HttpServletRequest request){
+         ModelAndView m = new ModelAndView();
+         try{
+             String pageNum = request.getParameter("pageNum");
+             String pageSize = request.getParameter("pageSize");
+ 
+             if (StringUtils.isEmpty(pageNum) || StringUtils.isEmpty(pageSize) || "0".endsWith(pageNum)) {
+                 PageHelper.startPage(1, 10);
+             } else {
+                 PageHelper.startPage(request);
+             }
+             List<${Entity}> list = ${entity}Mapper.selectByExample(null);
+             PageInfo<${Entity}> page = new PageInfo<${Entity}>(list);
+             
+             m.addObject("page", page);
+         }catch (Exception e) {
+             logger.error(e.toString());
+         }
+         return m; 
+     }
+ 
+     @RequestMapping("add")
+     public String get${Entity}AddPage(HttpServletRequest request){
+         return "${entity}/add";
+     }
+ 
+     @RequestMapping("insert")
+     @ResponseBody
+     public Map<String, String> add${Entity}(HttpServletRequest request){
+         Map<String, String> map = new HashMap<String, String>();
+         try {
+             ${fieldAddDef}
+             ${Entity} ${entity} = new ${Entity}();
+             ${fieldAddSet}
+             ${entity}Mapper.insert(${entity});
+             map.put("msg", "新增成功！");
+         } catch (Exception e) {
+             map.put("msg", "新增失败！");
+             logger.error(e.toString());
+         }
+         return map;
+     }
+ 
+     @RequestMapping("edit")
+     public String get${Entity}UpdatePage(Model model, HttpServletRequest request) {
+         try{
+             String pk_value = request.getParameter("pk_val");
+             ${Entity} ${entity} = ${entity}Mapper.selectByPrimaryKey(pk_value);
+             model.addAttribute("${entity}", ${entity});
+         }catch (Exception e) {
+             logger.error(e.toString());
+         }
+         return "${entity}/edit";
+     }
+ 
+     @RequestMapping("update")
+     @ResponseBody
+     public Map<String, String> update${Entity}(HttpServletRequest request){
+         Map<String, String> map = new HashMap<String, String>();
+         try {
+         	 String pk_value = request.getParameter("${pk_name}");
+             ${Entity} ${entity} = ${entity}Mapper.selectByPrimaryKey(pk_value);
+             ${fieldUpdateDef}
+             ${fieldUpdateSet}
+             ${entity}Mapper.updateByPrimaryKey(${entity});
+             map.put("msg", "修改成功！");
+         } catch (Exception e) {
+             map.put("msg", "修改失败！");
+             logger.error(e.toString());
+         }
+         return map;
+     }
+ 
+     @RequestMapping("delete")
+     @ResponseBody
+     public Map<String, String> delete${Entity}ById(HttpServletRequest request) {
+         Map<String, String> map = new HashMap<String, String>();
+         try {
+             String[] pkVals = request.getParameterValues("pkVals");
+             for (String pk_val : pkVals) {
+                 ${entity}Mapper.deleteByPrimaryKey(pk_val);
+             }
+             map.put("msg", "删除成功！");
+         } catch (Exception e) {
+             map.put("msg", "删除失败");
+             logger.error(e.toString());
+         }
+         return map;
+     }
+ 
+     @RequestMapping("view")
+     public String get${Entity}ViewPage(Model model, HttpServletRequest request){
+         try{
+             String pk_value = request.getParameter("pk_val");
+             ${Entity} ${entity} = ${entity}Mapper.selectByPrimaryKey(pk_value);
+             model.addAttribute("${entity}", ${entity});
+         }catch (Exception e) {
+             logger.error(e.toString());
+         }
+         return "${entity}/view";
+     }
+ 
+     @RequestMapping("search")
+     public ModelAndView search${Entity}List(HttpServletRequest request){
+         ModelAndView m = new ModelAndView("${entity}/list");
+         try{
+             String column_name = request.getParameter("column_name");
+ 
+             Map<String, String> map = new HashMap<String, String>();
+             map.put("column_name", column_name);
+ 
+             String pageNum = request.getParameter("pageNum");
+             String pageSize = request.getParameter("pageSize");
+             if (StringUtils.isEmpty(pageNum) || StringUtils.isEmpty(pageSize) || "0".endsWith(pageNum)) {
+                 PageHelper.startPage(1, 10);
+             } else {
+                 PageHelper.startPage(request);
+             }
+             //List<${Entity}> list = ${Entity}Mapper.searchByCondition(map);
+             //PageInfo<${Entity}> page = new PageInfo<${Entity}>(list);
+             
+             //m.addObject("page", page);
+         }catch (Exception e) {
+             logger.error(e.toString());
+         }
+         return m; 
+     }
+ }
