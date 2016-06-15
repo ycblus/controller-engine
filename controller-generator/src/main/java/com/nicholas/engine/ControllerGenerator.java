@@ -8,7 +8,6 @@
 */
 package com.nicholas.engine;
 
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +28,8 @@ public class ControllerGenerator extends FileGeneratorFacotry{
         StringBuffer fieldSetAddStr = new StringBuffer();
         StringBuffer fieldDefUpdateStr = new StringBuffer();
         StringBuffer fieldSetUpdateStr = new StringBuffer();
-        @SuppressWarnings("unchecked")
-        List<String> fieldList = (List<String>) map.get(entityName + "_list");
+        @SuppressWarnings({ "rawtypes" })
+        List fieldList = (List) map.get(entityName + "_list");
 
         for (Object obj : fieldList) {
             @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -65,8 +64,8 @@ public class ControllerGenerator extends FileGeneratorFacotry{
                 .replace("${fieldUpdateDef}", fieldDefUpdateStr)
                 .replace("${fieldUpdateSet}", fieldSetUpdateStr);
         
-        URL base = this.getClass().getResource("");
-        String classpath = new File(base.getFile(), this.getClass().getName() + ".java").getCanonicalPath();
+        URL base = ControllerGenerator.class.getResource("");
+        String classpath = base.getPath();
         String projectPath = classpath.substring(0, classpath.indexOf("target"));
         String fileName = entityName + "Controller.java";
         String javaFilePath = projectPath + "src\\main\\java\\" + targetPath + "\\" + fileName;

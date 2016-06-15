@@ -16,9 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import org.apache.log4j.Logger;
 
-import org.apache.ibatis.io.Resources;
+import org.apache.log4j.Logger;
 
 /**
  * @ClassName: FileGeneratorFacotry
@@ -40,7 +39,7 @@ public class FileGeneratorFacotry {
     public StringBuffer getTemplateContents(String templateName) throws IOException{
         StringBuffer sb = new StringBuffer();
 
-        InputStream inputStream = Resources.getResourceAsStream("template/"+templateName);
+        InputStream inputStream = FileGeneratorFacotry.class.getClassLoader().getResourceAsStream(templateName);//Resources.getResourceAsStream("template/"+templateName);
         InputStreamReader isr = new InputStreamReader(inputStream,"UTF-8");
         BufferedReader reader = new BufferedReader(isr);
         while (reader.read() != -1) {
